@@ -6,15 +6,16 @@
         <span class="text-2xl font-semibold mx-0">Mis Tareas</span>
       </template>
       <template #item="{ item }">
-        <a
+        <router-link
+          :to="item.to"
           v-if="item.root"
           v-ripple
           class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg"
           style="border-radius: 2rem"
         >
-          <span :class="item.icon" />
+          <!-- <span :class="item.icon" /> -->
           <span class="ml-2">{{ item.label }}</span>
-        </a>
+        </router-link>
       </template>
       <!-- <template #end>
         <Avatar
@@ -35,10 +36,12 @@ import Button from "primevue/button";
 const items = ref([
   {
     label: "Lista",
+    to: "/",
     root: true,
   },
   {
     label: "Calendario",
+    to: "/calendar",
     root: true,
   },
 ]);

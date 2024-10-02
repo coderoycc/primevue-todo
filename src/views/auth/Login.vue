@@ -32,7 +32,10 @@
         <Button label="Ingresar" class="w-full p-button p-button-primary" />
       </form>
       <p class="text-end mt-2">
-        ¿No tienes una cuenta? <a href="#">Regístrate</a>
+        ¿No tienes una cuenta?
+        <router-link class="font-semibold" to="/register"
+          >Regístrate</router-link
+        >
       </p>
     </div>
   </div>
@@ -40,8 +43,6 @@
 
 <script setup>
 import { ref } from "vue";
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 
 const email = ref("");
 const password = ref("");

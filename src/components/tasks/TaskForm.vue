@@ -18,7 +18,7 @@
         >
       </FloatLabel>
     </div>
-    <div class="mt-2">
+    <div v-if="newTask || !task.expires" class="mt-2">
       <Inplace>
         <template #display>
           <label for="tags" class="block text-gray-700 mb-2"
@@ -33,14 +33,27 @@
         </template>
       </Inplace>
     </div>
+    <!-- En caso de editar -->
+    <div v-if="task.expires" class="mt-2">
+      <label for="tags" class="block text-gray-700 mb-2"
+        >Fecha de vencimiento</label
+      >
+      <DatePicker
+        v-model="taskForm.expires"
+        class="w-full"
+        dateFormat="yy-mm-dd"
+      />
+    </div>
     <div class="mt-3">
       <div class="mb-4">
-        <label for="tags" class="block text-gray-700 mb-2">Etiquetas</label>
+        <label for="tags" class="block text-gray-700 mb-2"
+          >Etiquetas
+          <span class="float-end mr-2">{{ tagsLength }}/4 </span></label
+        >
         <Chips
           v-model="taskForm.tags"
-          @keydown.enter.prevent="addTag"
           class="w-full p-component"
-          separator=" "
+          :max="4"
           placeholder="Presiona Enter para agregar "
         />
       </div>
@@ -51,36 +64,73 @@
         severity="success"
         :label="newTask ? 'Guardar' : 'Actualizar'"
         icon="pi pi-save"
+        @click="sendForm"
       />
     </div>
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
-import Button from "primevue/button";
-import FloatLabel from "primevue/floatlabel";
-import InputText from "primevue/inputtext";
-import Chips from "primevue/chips";
-import DatePicker from "primevue/datepicker";
-import Inplace from "primevue/inplace";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+const store = useStore();
+const tagsLength = computed(() =>
+  taskForm.value.tags ? taskForm.value.tags.length : 0
+);
+const taskDefault = {
+  title: "",
+  description: "",
+  tags: [],
+  expires: null,
+};
 const props = defineProps({
   newTask: {
     type: Boolean,
     required: true,
   },
-});
-const taskForm = ref({
-  title: "",
-  description: "",
-  tags: [],
-  expires: null,
+  task: {
+    type: Object,
+    required: false,
+    default: {},
+  },
 });
 
-const addTag = () => {
-  console.log("nuevas etiquetas");
-  // Agrega la etiqueta solo si no está vacía
-  if (tags.value.length && tags.value[tags.value.length - 1].trim() !== "") {
-    // Permite agregar nuevas etiquetas con Enter
+const taskForm = ref({});
+onMounted(() => {
+  console.log(store.state.test);
+  if (!props.newTask) {
+    taskForm.value = { ...props.task };
+  } else taskForm.value = { ...taskDefault };
+});
+async function sendForm() {
+  console.log(taskForm.value);
+  if (validateForm()) {
   }
-};
+}
+function validateForm() {
+  const title = taskForm.value.title.trim();
+  const description = taskForm.value.description.trim();
+  const tagsLength = taskForm.value.tags.length;
+  if (title.length >= 0 && description.length >= 0 && tagsLength <= 4) {
+    if (title.length < 3) {
+      toast.add({
+        severity: "error",
+        summary: "Formulario inválido",
+        detail: "Titulo muy corto",
+        life: 2500,
+      });
+      return false;
+    }
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Formulario inválido",
+      detail: "Complete los campos requeridos",
+      life: 2500,
+    });
+    return false;
+  }
+  return true;
+}
 </script>

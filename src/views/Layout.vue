@@ -9,5 +9,4 @@
 </template>
 <script setup>
 import Menu from "@components/layout/Menu.vue";
-import Toast from "primevue/toast";
 </script>

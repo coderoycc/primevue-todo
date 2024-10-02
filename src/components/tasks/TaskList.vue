@@ -73,14 +73,16 @@
                     >23/12/2022</span
                   >
                   <div class="flex flex-row-reverse md:flex-row gap-2">
-                    <Button icon="pi pi-check" />
+                    <Button
+                      @click="changeStatus($event, item)"
+                      icon="pi pi-check"
+                    />
                     <Button
                       severity="info"
                       icon="pi pi-pencil"
                       outlined
-                      @click="drawerEditTask = true"
+                      @click="editTask(item)"
                     />
-                    <Button severity="danger" icon="pi pi-trash" outlined />
                   </div>
                 </div>
               </div>
@@ -98,25 +100,34 @@
     header="Actualizar tarea"
     position="right"
   >
-    <TaskForm :newTask="false" />
+    <TaskForm :newTask="false" :task="task" />
   </Drawer>
+  <ConfirmPopup />
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import Drawer from "primevue/drawer";
-import TaskForm from "@components/tasks/TaskForm.vue";
-import DataView from "primevue/dataview";
-import Select from "primevue/select";
-import Tag from "primevue/tag";
-import Button from "primevue/button";
+import { useConfirm } from "primevue/useconfirm";
 const drawerEditTask = ref(false);
-onMounted(() => {
-  // ProductService.getProductsSmall().then(
-  //   (data) => (products.value = data.slice(0, 5))
-  // );
-});
-
+const confirm = useConfirm();
+const task = ref(null);
+onMounted(() => {});
+function changeStatus(event, data) {
+  confirm.require({
+    target: event.currentTarget,
+    message: "¿Cambiar estado de la tarea?",
+    icon: "pi pi-exclamation-triangle",
+    rejectProps: {
+      label: "No",
+      severity: "secondary",
+      outlined: true,
+    },
+    acceptProps: {
+      label: "Sí",
+    },
+    accept: () => {},
+  });
+}
 const products = ref([
   {
     id: "1000",
@@ -129,6 +140,11 @@ const products = ref([
     quantity: 24,
     inventoryStatus: "INSTOCK",
     rating: 5,
+
+    title: "Un nuevo titulo de los titulos",
+    description: "Descripcion que se encuentra nominanda",
+    tags: "event,nuevo,leer",
+    expires: "2023-12-21",
   },
   {
     id: "1000",
@@ -168,4 +184,10 @@ const onSortChange = (event) => {
 
   console.log(value, sortValue);
 };
+function editTask(data) {
+  const tags = data.tags ? data.tags : "";
+  const arrayTags = tags == "" ? [] : tags.split(",");
+  task.value = { ...data, tags: arrayTags };
+  drawerEditTask.value = true;
+}
 </script>

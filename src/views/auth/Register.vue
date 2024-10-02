@@ -47,8 +47,6 @@
 
 <script setup>
 import { ref } from "vue";
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 
 const email = ref("");
 const password = ref("");

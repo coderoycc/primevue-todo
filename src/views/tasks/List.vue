@@ -17,10 +17,14 @@
   </Drawer>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
 import TaskList from "@components/tasks/TaskList.vue";
-import Button from "primevue/button";
-import Drawer from "primevue/drawer";
 import TaskForm from "@components/tasks/TaskForm.vue";
 const drawerNewTask = ref(false);
+const store = useStore();
+const testsData = computed(() => store.state.test);
+onMounted(() => {
+  store.dispatch("fetchTasks", { name: "rest", other: "Data" });
+});
 </script>
