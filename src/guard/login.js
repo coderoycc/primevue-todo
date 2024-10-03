@@ -1,4 +1,3 @@
-import store from "@store/index";
 /**
  * Guard para proteger rutas que requiren login
  * @param to Route To
@@ -6,8 +5,7 @@ import store from "@store/index";
  * @param {*} next
  */
 export function guardNavigation(to, from, next) {
-  const tokenAuth = store.state.tkLogin; // obtenemos token
-
+  const tokenAuth = localStorage.getItem('app_tk'); // obtenemos token
   // Si la ruta requiere autenticación y el usuario no está autenticado
   if (to.meta.requiresAuth && !tokenAuth) {
     next("/login"); // Redirige al login

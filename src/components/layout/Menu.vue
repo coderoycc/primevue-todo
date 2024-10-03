@@ -17,22 +17,30 @@
           <span class="ml-2">{{ item.label }}</span>
         </router-link>
       </template>
-      <!-- <template #end>
-        <Avatar
-          image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
-          shape="circle"
-        />
-      </template> -->
+      <template #end>
+        <div class="cursor-pointer w-full" @click.prevent="showDialog($event)" ref="refAvatar">
+          <Avatar
+            image="/user.png"
+            shape="circle"
+          />
+        </div>
+      </template>
     </MegaMenu>
   </div>
+
 </template>
 
 <script setup>
 import { ref } from "vue";
-import Avatar from "primevue/avatar";
-import MegaMenu from "primevue/megamenu";
-import Button from "primevue/button";
-
+import { useConfirm } from "primevue/useconfirm";
+import { useStore } from 'vuex';
+import { useToast } from 'primevue/usetoast';
+import { useRouter } from "vue-router";
+const refAvatar = ref();
+const store = useStore();
+const toast = useToast();
+const confirm = useConfirm();
+const router = useRouter();
 const items = ref([
   {
     label: "Lista",
@@ -45,4 +53,26 @@ const items = ref([
     root: true,
   },
 ]);
+function showDialog(event){
+  confirm.require({
+    target: refAvatar.value,
+    defaultFocus: true,  
+    message: "¿Desea cerrar sesión?",
+    icon: "pi pi-exclamation-triangle",
+    position:"top",
+    rejectProps: {
+      label: "No",
+      severity: "secondary",
+      outlined: true,
+    },
+    acceptProps: {
+      label: "Sí",
+    },
+    accept: () => {
+      store.commit('clearTokenSession');
+      toast.add({ severity: 'info', life: 2300, summary: 'Cerrando sesión'});
+      router.push('/login');
+    },
+  });
+}
 </script>

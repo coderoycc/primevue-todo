@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import store from "./store";
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
 import App from "./App.vue";
@@ -6,7 +7,6 @@ import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
 import ConfirmPopup from "primevue/confirmationservice";
 import router from "./router";
-import store from "./store";
 import "@assets/index.css";
 import "@assets/tailwind.css";
 

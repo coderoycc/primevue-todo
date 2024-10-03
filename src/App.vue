@@ -1,7 +1,13 @@
 <template>
   <router-view />
+  <Toast />
 </template>
-<script setup></script>
+<script setup>
+import { useStore } from 'vuex';
+const store = useStore();
+store.dispatch('getDataSession');
+
+</script>
 
 <style scope>
 * {

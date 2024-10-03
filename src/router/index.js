@@ -1,8 +1,6 @@
 import AppLayout from "@views/Layout.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { guardNavigation } from "../guard/login";
-// import { useStore } from "vuex";
-// const store = useStore();
 const routesApp = [
   {
     path: "/",
@@ -47,5 +45,5 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach(guardNavigation);
+router.beforeEach(guardNavigation);
 export default router;

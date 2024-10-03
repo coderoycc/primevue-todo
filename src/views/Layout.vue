@@ -5,7 +5,6 @@
       <router-view></router-view>
     </div>
   </div>
-  <Toast />
 </template>
 <script setup>
 import Menu from "@components/layout/Menu.vue";

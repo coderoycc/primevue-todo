@@ -29,7 +29,7 @@
           <label for="tags" class="block text-gray-700 mb-2"
             >Fecha de vencimiento</label
           >
-          <DatePicker v-model="taskForm.expires" class="w-full" />
+          <DatePicker v-model="taskForm.expires" class="w-full" dateFormat="yy-mm-dd" />
         </template>
       </Inplace>
     </div>
@@ -73,8 +73,10 @@
 import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useToast } from "primevue/usetoast";
+import { create, update } from "../../services/taskService";
 const toast = useToast();
 const store = useStore();
+const emit = defineEmits(['saved'])
 const tagsLength = computed(() =>
   taskForm.value.tags ? taskForm.value.tags.length : 0
 );
@@ -106,6 +108,25 @@ onMounted(() => {
 async function sendForm() {
   console.log(taskForm.value);
   if (validateForm()) {
+    try {
+      let response = {};
+      if(props.newTask)
+        response = await create(taskForm.value);
+      else
+        response = await update(taskForm.value);
+
+      console.log(response)
+      if(response.data.success){
+        toast.add({ severity: 'success', summary: props.newTask ? 'Creado':'Actualizado', life: 2400})
+        emit('saved', []);
+        store.commit('refreshTasks', response.data.data ?? []);
+      }
+    } catch (error) {
+      console.log(error);
+      const res = error.response;
+      const message = res.data ? res.data.message : 'Error desconocido';
+      toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2400})
+    }
   }
 }
 function validateForm() {

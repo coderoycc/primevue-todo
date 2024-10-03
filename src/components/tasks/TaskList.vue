@@ -1,6 +1,6 @@
 <template>
   <div class="card w-9/12">
-    <DataView :value="products" paginator :rows="5">
+    <DataView :value="tasks" paginator :rows="5">
       <template #header>
         <Select
           v-model="sortKey"
@@ -28,31 +28,27 @@
                   class="flex flex-row md:flex-col justify-between items-start gap-2"
                 >
                   <div>
-                    <div class="text-lg font-medium mt-2">{{ item.name }}</div>
+                    <div class="text-lg font-medium mt-2">{{ item.title }}</div>
                     <span
                       class="font-medium text-surface-500 dark:text-surface-400 text-sm"
-                      >Una descripcion en las desacionasdfas de las que se
+                      >{{ item.description }}
                     </span>
                     <div class="m-0 flex flex-row gap-1">
-                      <Tag
-                        icon="pi pi-tag"
-                        value="Danger"
-                        severity="secondary"
-                        class="!py-0"
-                      ></Tag
-                      ><Tag
-                        severity="secondary"
-                        icon="pi pi-tag"
-                        value="Danger"
-                        class="!py-0"
-                      ></Tag>
+                      <template v-for="(tag, index) in item.tags.split(',')" :key="index">
+                        <Tag
+                          icon="pi pi-tag"
+                          :value="tag"
+                          severity="secondary"
+                          class="!py-0"
+                        ></Tag>
+                      </template>
                     </div>
                     <div class="m-0">
                       <i
                         class="pi pi-calendar cursor-pointer"
                         v-tooltip="'Fecha vencimiento'"
                       ></i>
-                      <span class="text-sm text-surface-500"> 12/12/2029</span>
+                      <span class="text-sm text-surface-500 pl-1"> {{ item.expires ?? 'S/F' }}</span>
                     </div>
                   </div>
                   <!-- <div class="bg-surface-100 p-1" style="border-radius: 30px">
@@ -70,7 +66,7 @@
                   <span
                     class="text-sm font-semibold cursor-pointer"
                     v-tooltip="'Creado el'"
-                    >23/12/2022</span
+                    >{{ item.created_at.split('T')[0] }}</span
                   >
                   <div class="flex flex-row-reverse md:flex-row gap-2">
                     <Button
@@ -100,18 +96,25 @@
     header="Actualizar tarea"
     position="right"
   >
-    <TaskForm :newTask="false" :task="task" />
+    <TaskForm @saved="drawerEditTask = false" :newTask="false" :task="task" />
   </Drawer>
   <ConfirmPopup />
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useConfirm } from "primevue/useconfirm";
+import { changeStatus as changeStatusService } from '@services/taskService';
+import { useToast } from 'primevue/usetoast'
+import { useStore } from 'vuex'
+const store = useStore();
+const toast = useToast();
 const drawerEditTask = ref(false);
 const confirm = useConfirm();
 const task = ref(null);
-onMounted(() => {});
+onMounted(() => {
+  console.log(store.state.tasks)
+});
 function changeStatus(event, data) {
   confirm.require({
     target: event.currentTarget,
@@ -125,52 +128,24 @@ function changeStatus(event, data) {
     acceptProps: {
       label: "Sí",
     },
-    accept: () => {},
+    accept: () => {
+      changeStatusTask(data)
+    },
   });
 }
-const products = ref([
-  {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-
-    title: "Un nuevo titulo de los titulos",
-    description: "Descripcion que se encuentra nominanda",
-    tags: "event,nuevo,leer",
-    expires: "2023-12-21",
-  },
-  {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-  },
-  {
-    id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
-  },
-]);
+function changeStatusTask(data){
+  changeStatusService(data)
+    .then((response) => {
+      if(response.data.success){
+        store.commit('refreshTasks', response.data.data);
+        toast.add({severity: 'success', summary: 'Actualizado', detail: 'Tarea actualizada', life: 2300 });
+      }
+    })
+    .catch((error) => {
+      toast.add({severity: 'error', summary: 'Ocurrio un error', detail: 'Tarea no actualizada', life: 2300 });
+    })
+}
+const tasks = computed(() => store.state.tasks );
 const sortKey = ref();
 const sortOptions = ref([
   { label: "Todos", value: null },
