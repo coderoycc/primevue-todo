@@ -4,19 +4,31 @@ import { getTasks } from "../services/taskService";
 export default createStore({
   state: {
     tasks: [],
-    test: [],
     userData: {},
     tkLogin: null, // token del login
   },
   getters: {
-    sortByDateExpires(state) {},
+    dataTaskTable: (state) => (filter) => {
+      if(filter){
+        const tmp = [...state.tasks]
+        if(filter.value === 'created'){
+          return tmp.sort((x,y) => {
+            return new Date(y.created_at).getTime() - new Date(x.created_at).getTime()
+          })
+        }else if(filter.value === 'vencimiento'){
+          return tmp.sort((x,y) => {
+            return new Date(y.expires).getTime() - new Date(x.expires).getTime()
+          })
+        }else if(filter.value === 'pendiente'){
+          return tmp.filter(x => x.status === 'PENDIENTE');
+        }
+      }
+      return state.tasks;
+    },
   },
   mutations: {
     refreshTasks(state, value) {
       state.tasks = value;
-    },
-    refreshTest(state, value) {
-      state.test = value;
     },
     setTokenSession(state, token) {
       localStorage.setItem("app_tk", token); // Guardar token en localStorage
