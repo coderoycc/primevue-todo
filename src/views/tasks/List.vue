@@ -24,6 +24,6 @@ import TaskForm from "@components/tasks/TaskForm.vue";
 const drawerNewTask = ref(false);
 const store = useStore();
 onMounted(() => {
-  store.dispatch("fetchTasks", { name: "rest", other: "Data" });
+  store.dispatch("fetchTasks");
 });
 </script>

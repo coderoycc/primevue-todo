@@ -8,19 +8,21 @@ export default createStore({
     tkLogin: null, // token del login
   },
   getters: {
-    dataTaskTable: (state) => (filter) => {
+    dataTaskFilter: (state) => (filter) => {
+      console.log(filter)
       if(filter){
         const tmp = [...state.tasks]
-        if(filter.value === 'created'){
-          return tmp.sort((x,y) => {
-            return new Date(y.created_at).getTime() - new Date(x.created_at).getTime()
-          })
-        }else if(filter.value === 'vencimiento'){
+        if(filter === 'vencimiento'){
           return tmp.sort((x,y) => {
             return new Date(y.expires).getTime() - new Date(x.expires).getTime()
           })
-        }else if(filter.value === 'pendiente'){
+        }else if(filter === 'pendiente'){
           return tmp.filter(x => x.status === 'PENDIENTE');
+        }else if(filter === 'hecho'){
+          return tmp.filter(x => x.status == 'HECHO');
+        }else if(filter === 'today'){
+          const today = new Date().toISOString().split('T')[0];
+          return tmp.filter(x => new Date(x.expires).toISOString().split('T')[0] === today);
         }
       }
       return state.tasks;
@@ -53,11 +55,8 @@ export default createStore({
     async fetchTasks({ commit, state }, filters) {
       try {
         const response = await getTasks(filters);
-        console.log(response);
         if (response.data.success) {
-          console.log('Esta dentro')
           commit("refreshTasks", response.data.data);
-          console.log(state.tasks)
         }
       } catch (error) {
         console.log("STORE ERROR", error);

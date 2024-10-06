@@ -5,6 +5,7 @@ import Aura from "@primevue/themes/aura";
 import App from "./App.vue";
 import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
+import { setupCalendar } from 'v-calendar';
 import ConfirmPopup from "primevue/confirmationservice";
 import router from "./router";
 import "@assets/index.css";
@@ -24,5 +25,5 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmPopup);
-
+app.use(setupCalendar, {});
 app.mount("#app");
