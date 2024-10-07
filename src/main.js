@@ -10,6 +10,7 @@ import ConfirmPopup from "primevue/confirmationservice";
 import router from "./router";
 import "@assets/index.css";
 import "@assets/tailwind.css";
+import { localeEs } from "./config/locale-es";
 
 const app = createApp(App);
 app.use(store);
@@ -22,6 +23,7 @@ app.use(PrimeVue, {
       darkModeSelector: ".app-dark",
     },
   },
+  locale: localeEs
 });
 app.use(ToastService);
 app.use(ConfirmPopup);

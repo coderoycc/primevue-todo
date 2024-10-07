@@ -12,12 +12,25 @@ const instance = axios.create({
 });
 
 /**
- * Interceptor RESPONSE para cerrar session cuando el token haya vencido.
+ * Interceptor RESPONSE para errores en peticiones
  */
 instance.interceptors.response.use(
   response => response,
   error => {
-    if (error.response.status === 401) {
+    console.log(error)
+    if(!error.response){ // No hay conexion al backend
+      return Promise.reject({ response: 
+        { data: 
+          { 
+            message: 'Sin conexión, intente más tarde',
+            handler: 'HTTP_INTERCEPTOR',
+          },
+          base: error.config.baseURL,
+          url: error.config.url
+        }
+      })
+    }
+    if (error.response.status === 401) { // Error 401 token vencido o no valido
       store.commit('clearTokenSession');
       router.push('/login');
     }

@@ -8,14 +8,8 @@
     </div>
     <div class="mt-7">
       <FloatLabel>
-        <InputText
-          id="description"
-          v-model="taskForm.description"
-          class="w-full"
-        />
-        <label for="description"
-          >Descripción <span class="text-red-500">*</span></label
-        >
+        <InputText id="description" v-model="taskForm.description" class="w-full" />
+        <label for="description">Descripción <span class="text-red-500">*</span></label>
       </FloatLabel>
     </div>
     <div v-if="newTask || !task.expires" class="mt-2">
@@ -26,35 +20,27 @@
           ></template
         >
         <template #content>
-          <label for="tags" class="block text-gray-700 mb-2"
-            >Fecha de vencimiento</label
-          >
+          <label for="tags" class="block text-gray-700 mb-2">Fecha de vencimiento</label>
           <DatePicker v-model="taskForm.expires" class="w-full" dateFormat="yy-mm-dd" />
         </template>
       </Inplace>
     </div>
     <!-- En caso de editar -->
     <div v-if="task.expires" class="mt-2">
-      <label for="tags" class="block text-gray-700 mb-2"
-        >Fecha de vencimiento</label
-      >
-      <DatePicker
-        v-model="taskForm.expires"
-        class="w-full"
-        dateFormat="yy-mm-dd"
-      />
+      <label for="tags" class="block text-gray-700 mb-2">Fecha de vencimiento</label>
+      <DatePicker v-model="taskForm.expires" class="w-full" dateFormat="yy-mm-dd" />
     </div>
     <div class="mt-3">
       <div class="mb-4">
         <label for="tags" class="block text-gray-700 mb-2"
-          >Etiquetas
-          <span class="float-end mr-2">{{ tagsLength }}/4 </span></label
+          >Etiquetas <span class="float-end mr-2">{{ tagsLength }}/4 </span></label
         >
         <Chips
           v-model="taskForm.tags"
           class="w-full p-component"
           :max="4"
           placeholder="Presiona Enter para agregar "
+          @add="changeChips"
         />
       </div>
     </div>
@@ -76,10 +62,8 @@ import { useToast } from "primevue/usetoast";
 import { create, update } from "../../services/taskService";
 const toast = useToast();
 const store = useStore();
-const emit = defineEmits(['saved'])
-const tagsLength = computed(() =>
-  taskForm.value.tags ? taskForm.value.tags.length : 0
-);
+const emit = defineEmits(["saved"]);
+const tagsLength = computed(() => (taskForm.value.tags ? taskForm.value.tags.length : 0));
 const taskDefault = {
   title: "",
   description: "",
@@ -110,22 +94,24 @@ async function sendForm() {
   if (validateForm()) {
     try {
       let response = {};
-      if(props.newTask)
-        response = await create(taskForm.value);
-      else
-        response = await update(taskForm.value);
+      if (props.newTask) response = await create(taskForm.value);
+      else response = await update(taskForm.value);
 
-      console.log(response)
-      if(response.data.success){
-        toast.add({ severity: 'success', summary: props.newTask ? 'Creado':'Actualizado', life: 2400})
-        emit('saved', []);
-        store.commit('refreshTasks', response.data.data ?? []);
+      console.log(response);
+      if (response.data.success) {
+        toast.add({
+          severity: "success",
+          summary: props.newTask ? "Creado" : "Actualizado",
+          life: 2400,
+        });
+        emit("saved", []);
+        store.commit("refreshTasks", response.data.data ?? []);
       }
     } catch (error) {
       console.log(error);
       const res = error.response;
-      const message = res.data ? res.data.message : 'Error desconocido';
-      toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2400})
+      const message = res.data ? res.data.message : "Error desconocido";
+      toast.add({ severity: "error", summary: "Error", detail: message, life: 2400 });
     }
   }
 }
@@ -153,5 +139,17 @@ function validateForm() {
     return false;
   }
   return true;
+}
+function changeChips(event) {
+  const { value } = event;
+  const newValues = value.map((x) => x.trim());
+  const lastElement = newValues.pop();
+  if (lastElement.length > 10) {
+    taskForm.value.tags = [...newValues];
+    toast.add({ severity: "warn", life: 1800, summary: "Etiqueta demasido larga" });
+  } else if (newValues.includes(lastElement)) {
+    console.log("repetido");
+    taskForm.value.tags = [...newValues];
+  }
 }
 </script>

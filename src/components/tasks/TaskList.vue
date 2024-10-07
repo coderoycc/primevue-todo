@@ -59,8 +59,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="flex flex-col md:items-end md:gap-4">
-                  <div class="m-0 flex flex-row flex-wrap gap-1">
+                <div class="flex flex-col md:items-end gap-1 md:gap-4">
+                  <div class="m-0 flex flex-row md:justify-end flex-wrap gap-1">
                     <template v-for="(tag, index) in item.tags.split(',')" :key="index">
                       <Tag
                         icon="pi pi-tag"
