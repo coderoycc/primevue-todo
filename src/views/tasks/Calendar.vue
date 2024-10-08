@@ -1,6 +1,8 @@
 <template>
   <div class="w-full">
-    <div class="text-xl text-gray-700 my-3 font-semibold">CALENDARIO DE TAREAS</div>
+    <div class="text-xl text-gray-700 my-3 mx-2 md:mx-0 font-semibold">
+      CALENDARIO DE TAREAS
+    </div>
     <TaskCalendar />
   </div>
 

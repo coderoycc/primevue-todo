@@ -21,8 +21,9 @@ export default createStore({
         }else if(filter === 'hecho'){
           return tmp.filter(x => x.status == 'HECHO');
         }else if(filter === 'today'){
-          const today = new Date().toISOString().split('T')[0];
-          return tmp.filter(x => new Date(x.expires).toISOString().split('T')[0] === today);
+          const today = new Date().toLocaleDateString().split('/');
+          const todayFormat = `${today[2]}-${today[1].padStart(2,'0')}-${today[0].padStart(2,'0')}`;
+          return tmp.filter(x => x.expires === todayFormat);
         }
       }
       return state.tasks;
@@ -34,15 +35,15 @@ export default createStore({
     },
     setTokenSession(state, token) {
       localStorage.setItem("app_tk", token); // Guardar token en localStorage
-      state.token = token;
+      state.tkLogin = token;
     },
     setUserSession(state, userData){
       localStorage.setItem('dataUser', JSON.stringify(userData))
       state.userData = userData;
     },
     loadSessionData(state, data){
-      state.token = data.token ?? null;
-      state.userData = data.user; 
+      state.tkLogin = data.token ?? null;
+      state.userData = JSON.parse(data.user);
     },
     clearTokenSession(state) {
       state.userData = {};
@@ -65,7 +66,7 @@ export default createStore({
     getDataSession({ commit, state }){
       const token = localStorage.getItem('app_tk');
       const user = localStorage.getItem('dataUser');
-      const data = {token: token ?? null, user: user ?? {}}
+      const data = {token: token ?? null, user: user ?? '{}'}
       commit('loadSessionData', data)
     }
   },

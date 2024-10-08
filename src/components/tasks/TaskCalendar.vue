@@ -1,18 +1,27 @@
 <template>
   <div class="mx-3">
-    <div class="flex my-4 items-center gap-2">
-      <label>Ir a un mes</label>
-      <DatePicker
-        v-model="date"
-        view="month"
-        dateFormat="mm/yy"
-        placeholder="Selecciona un mes"
-        @update:modelValue="changeDate"
-        :showButtonBar="true"
-      >
-        <template #></template>
-      </DatePicker>
+    <div class="w-full mb-2">
+      <Fieldset legend="Filtros" :toggleable="true">
+        <div class="flex justify-center md:justify-between flex-wrap items-center gap-2">
+          <div>
+            <Select :options="options" optionLabel="name" v-model="filter" />
+          </div>
+          <div>
+            <label class="mr-1 font-medium">Ir a un mes</label>
+            <DatePicker
+              v-model="date"
+              view="month"
+              dateFormat="mm/yy"
+              placeholder="Selecciona un mes"
+              @update:modelValue="changeDate"
+              :showButtonBar="true"
+            >
+            </DatePicker>
+          </div>
+        </div>
+      </Fieldset>
     </div>
+
     <Calendar
       ref="cal"
       expanded
@@ -31,11 +40,16 @@ import { useScreens } from "vue-screen-utils";
 const { mapCurrent } = useScreens({ xs: "0px", sm: "640px", md: "768px", lg: "1024px" });
 const cal = ref();
 const date = ref(null);
+const filter = ref({ name: "Pendientes", value: "pendiente", color: "blue" });
+const options = [
+  { name: "Pendientes", value: "pendiente", color: "blue" },
+  { name: "Hechos", value: "hecho", color: "green" },
+];
 const columns = mapCurrent({ md: 2, lg: 2 }, 1);
 const rows = mapCurrent({ md: 1, lg: 1 }, 2);
 const store = useStore();
 const todos = computed(() => {
-  const data = store.getters.dataTaskFilter("pendiente");
+  const data = store.getters.dataTaskFilter(filter.value.value);
   return data.filter((x) => x.expires);
 });
 const attributes = computed(() => [
@@ -51,7 +65,7 @@ const attributes = computed(() => [
   },
   // Attributes for todos
   ...todos.value.map((todo) => ({
-    highlight: true,
+    highlight: filter.value.color,
     dates: new Date(`${todo.expires}T23:59:59.000Z`),
     dot: {
       color: "red",
@@ -70,8 +84,3 @@ function changeDate(event) {
   }
 }
 </script>
-<style>
-input.p-datepicker-input {
-  cursor: pointer;
-}
-</style>
