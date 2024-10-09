@@ -6,10 +6,11 @@
     <TaskCalendar />
   </div>
 
-  <div class="absolute bottom-3 right-3">
+  <div class="fixed bottom-4 right-4 z-10">
     <Button
       severity="info"
       rounded
+      raised
       icon="pi pi-fw pi-plus"
       v-tooltip="'Agregar nueva tarea'"
       @click="drawerNewTask = true"

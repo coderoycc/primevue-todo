@@ -4,7 +4,7 @@ import http from "../config/httpAxios.config";
  * @param {Object} credentials
  * @returns {Promise}
  */
-export async function register(credentials) {
+export function register(credentials) {
   return http.post("/auth/register", credentials);
 }
 /**
@@ -12,6 +12,13 @@ export async function register(credentials) {
  * @param {Object} credentials
  * @returns {Promise}
  */
-export async function login(credentials) {
+export function login(credentials) {
   return http.post("/auth/login", credentials);
+}
+
+/**
+ * Cambiar contraseña
+ */
+export function changePass(form){
+  return http.put("/auth/user/changepass", form);
 }
