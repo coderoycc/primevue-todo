@@ -1,0 +1,49 @@
+name: Deploy React App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Se ejecuta cuando haces push a la rama main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      # Paso 1: Checkout del repositorio
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Paso 2: Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Paso 3: Instalar dependencias
+      - name: Install Dependencies
+        run: npm install
+
+      # Paso 4: Build de la aplicación React
+      - name: Build React App
+        run: npm run build
+
+      # Paso 5: Configurar Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # Paso 6: Subir artefacto
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+      # Paso 7: Desplegar a GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
