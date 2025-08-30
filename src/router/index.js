@@ -1,5 +1,5 @@
 import AppLayout from "@views/Layout.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import { guardNavigation } from "../guard/login";
 const routesApp = [
   {
@@ -23,7 +23,7 @@ const routesApp = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     ...routesApp,
     {

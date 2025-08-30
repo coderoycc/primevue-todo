@@ -41,6 +41,9 @@
           class="w-full p-button p-button-primary"
         />
       </form>
+      <p class="mt-4 text-center">
+        ¿Ya tienes una cuenta? <RouterLink to="/login" class="text-blue-500">Iniciar sesión.</RouterLink>
+      </p>
     </div>
   </div>
 </template>

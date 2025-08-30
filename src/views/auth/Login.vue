@@ -31,11 +31,8 @@
         </div>
         <Button type="submit" label="Ingresar" class="w-full p-button p-button-primary" />
       </form>
-      <p class="text-end mt-2">
-        ¿No tienes una cuenta?
-        <router-link class="font-semibold" to="/register"
-          >Regístrate</router-link
-        >
+      <p class="mt-4 text-center">
+        ¿No tienes una cuenta? <RouterLink to="/register" class="text-blue-500">Crear una cuenta.</RouterLink>
       </p>
     </div>
   </div>
