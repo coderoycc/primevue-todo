@@ -64,7 +64,6 @@ const store = useStore();
 const toast = useToast();
 const sendForm = async () => {
   try {
-    console.log("dento");
     if (validateForm()) {
       const { data } = await register(formRegister.value);
       if (data.success) {

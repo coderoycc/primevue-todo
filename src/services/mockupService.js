@@ -1,14 +1,24 @@
-import http from "../config/httpAxios.config";
-export async function getTasks(filter) {
-  return http.get("/task", filter);
+export function register(credentials) {
+  return http.post("/auth/register", credentials);
 }
-export async function test(filters) {
-  return http.get("/task");
+/**
+ * Login a la aplicacion <<JWT>>
+ * @param {Object} credentials
+ * @returns {Promise}
+ */
+export function login(credentials) {
+  return http.post("/auth/login", credentials);
 }
-export async function changeStatus(data) {
+
+export function changePass(form) {
+  return http.put("/auth/user/changepass", form);
+}
+
+export function changeStatus(data) {
   const status = data.status == "PENDIENTE" ? "HECHO" : "PENDIENTE";
   return http.patch(`/task/${data.id}`, { status });
 }
+
 export async function update(data) {
   return http.put(`/task/${data.id}`, {
     ...data, 
@@ -35,4 +45,16 @@ function tagsToString(tags){
 function dateExpires(date){
   const toReturns = !date ? null : date.toISOString().split('T')[0];
   return toReturns; 
+}
+
+
+export async function mockupMain(url) {
+  console.log(url)
+  return { 
+    data: { 
+      success: true, 
+      token: 'mockup-token', 
+      user: { name: 'Mockup User' } 
+    } 
+  };
 }
