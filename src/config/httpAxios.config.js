@@ -20,7 +20,7 @@ instance.interceptors.response.use(
   error => {
     if(!error.response) { // No hay conexion al backend
       if(MODE === "demo") {
-        return Promise.resolve(mockupMain(error.config.url))
+        return Promise.resolve(mockupMain(error.config.url, error.config.method))
       } else {
         return Promise.reject({ response: 
           { data: 

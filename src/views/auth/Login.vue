@@ -54,12 +54,12 @@ const sendForm = async () => {
   try {
     if(email.value.length > 0 && password.value.length > 0){
     const { data } = await login({ email: email.value, password: password.value });
-      if(data.success){
+      if (data.success) {
         toast.add({ summary: 'Login correcto', detail: 'Redireccionando', severity: 'success', life: 2000 });
         store.commit('setTokenSession', data.token);
         store.commit('setUserSession', data.user);
         router.push('/');
-      }else{
+      } else{
         toast.add({ severity: 'error', summary: 'Login Incorrecto', detail: 'Crendenciales incorrectos', life: 2500 });
       }
     }else{

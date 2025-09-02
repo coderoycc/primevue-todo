@@ -2,9 +2,7 @@ import http from "../config/httpAxios.config";
 export async function getTasks(filter) {
   return http.get("/task", filter);
 }
-export async function test(filters) {
-  return http.get("/task");
-}
+
 export async function changeStatus(data) {
   const status = data.status == "PENDIENTE" ? "HECHO" : "PENDIENTE";
   return http.patch(`/task/${data.id}`, { status });

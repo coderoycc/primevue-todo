@@ -1,17 +1,27 @@
-export function register(credentials) {
-  return http.post("/auth/register", credentials);
-}
-/**
- * Login a la aplicacion <<JWT>>
- * @param {Object} credentials
- * @returns {Promise}
- */
-export function login(credentials) {
-  return http.post("/auth/login", credentials);
+export function registerMockup() {
+  return Promise.resolve({
+    data: {
+      success: true,
+      token: 'mockup-token',
+      user: { name: 'Mockup User' }
+    }
+  });
 }
 
-export function changePass(form) {
-  return http.put("/auth/user/changepass", form);
+export function loginMockup() {
+  return Promise.resolve({
+    data: {
+      success: true,
+      token: 'mockup-token',
+      user: { name: 'Mockup User' }
+    }
+  });
+}
+
+export function changePassMockup() {
+  return Promise.resolve({
+
+  })
 }
 
 export function changeStatus(data) {
@@ -48,13 +58,17 @@ function dateExpires(date){
 }
 
 
-export async function mockupMain(url) {
-  console.log(url)
-  return { 
-    data: { 
-      success: true, 
-      token: 'mockup-token', 
-      user: { name: 'Mockup User' } 
-    } 
-  };
+export async function mockupMain(url, method) {
+  console.log(url, method)
+  if (url === '/auth/register') {
+    return registerMockup();
+  } else if(url === '/auth/login') {
+    return loginMockup();
+  } else if (url === '/task' && method === 'get'){
+    return getTasksMockup();
+  } else if (url === '/task' && method === 'post') {
+    return createTaskMockup();
+  } else if (url === '/auth/user/changepass') {
+    return changePassMockup();
+  }
 }
