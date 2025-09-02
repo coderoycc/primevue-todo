@@ -1,7 +1,8 @@
 import store from "@store/index";
 import axios from "axios";
-import { URL_API } from "./constants.js";
+import { MODE, URL_API } from "./constants.js";
 import router from '../router';
+import { mockupMain } from "../services/mockupService.js";
 
 const instance = axios.create({
   baseURL: URL_API,
@@ -17,18 +18,21 @@ const instance = axios.create({
 instance.interceptors.response.use(
   response => response,
   error => {
-    console.log(error)
-    if(!error.response){ // No hay conexion al backend
-      return Promise.reject({ response: 
-        { data: 
-          { 
-            message: 'Sin conexión, intente más tarde',
-            handler: 'HTTP_INTERCEPTOR',
-          },
-          base: error.config.baseURL,
-          url: error.config.url
-        }
-      })
+    if(!error.response) { // No hay conexion al backend
+      if(MODE === "demo") {
+        return Promise.resolve(mockupMain(error.config.url, error.config.method))
+      } else {
+        return Promise.reject({ response: 
+          { data: 
+            { 
+              message: 'Sin conexión, intente más tarde',
+              handler: 'HTTP_INTERCEPTOR',
+            },
+            base: error.config.baseURL,
+            url: error.config.url
+          }
+        })
+      }
     }
     if (error.response.status === 401) { // Error 401 token vencido o no valido
       store.commit('clearTokenSession');
