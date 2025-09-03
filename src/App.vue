@@ -4,8 +4,10 @@
 </template>
 <script setup>
 import { useStore } from "vuex";
+import { mockup } from "./config/mockupData";
 const store = useStore();
 store.dispatch("getDataSession");
+mockup();
 </script>
 
 <style scope>

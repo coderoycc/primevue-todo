@@ -29,3 +29,4 @@ app.use(ToastService);
 app.use(ConfirmPopup);
 app.use(setupCalendar, {});
 app.mount("#app");
+

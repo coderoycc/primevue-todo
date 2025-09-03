@@ -74,10 +74,10 @@
                     <Button
                       @click="changeStatus($event, item)"
                       icon="pi pi-check"
-                      v-if="item.status === 'PENDIENTE'"
+                      v-if="item.status === 'HECHO'"
                     />
                     <Button
-                      v-if="item.status === 'HECHO'"
+                      v-if="item.status === 'PENDIENTE'"
                       severity="danger"
                       @click="changeStatus($event, item)"
                       icon="pi pi-times"
