@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { getTasks } from "../services/taskService";
+import moment from "moment";
 
 export default createStore({
   state: {
@@ -21,9 +22,8 @@ export default createStore({
         }else if(filter === 'hecho'){
           return tmp.filter(x => x.status == 'HECHO');
         }else if(filter === 'today'){
-          const today = new Date().toLocaleDateString().split('/');
-          const todayFormat = `${today[2]}-${today[1].padStart(2,'0')}-${today[0].padStart(2,'0')}`;
-          return tmp.filter(x => x.expires === todayFormat);
+          const today = moment();
+          return tmp.filter(x => !!x.expires && moment(x.expires).isSame(today, 'day'));
         }
       }
       return state.tasks;

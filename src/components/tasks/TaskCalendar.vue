@@ -50,7 +50,8 @@ const rows = mapCurrent({ md: 1, lg: 1 }, 2);
 const store = useStore();
 const todos = computed(() => {
   const data = store.getters.dataTaskFilter(filter.value.value);
-  return data.filter((x) => x.expires);
+  const filtered = data.filter((x) => x.expires);
+  return filtered;
 });
 const attributes = computed(() => [
   {
@@ -65,13 +66,14 @@ const attributes = computed(() => [
   },
   // Attributes for todos
   ...todos.value.map((todo) => ({
+    key: todo.id,
     highlight: filter.value.color,
-    dates: new Date(`${todo.expires}T23:59:59.000Z`),
+    dates: new Date(`${todo.expires}`),
     dot: {
       color: "red",
     },
     popover: {
-      label: todo.title,
+      label: `${todo.title}`,
     },
   })),
 ]);

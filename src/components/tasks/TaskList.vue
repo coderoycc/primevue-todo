@@ -45,7 +45,7 @@
                         v-tooltip="'Creado el'"
                       ></i>
                       <span class="text-sm text-surface-500 pl-1">
-                        Creado: {{ item.created_at.split("T")[0] }}</span
+                        Creado: {{ formatDate(item.created_at) }}</span
                       >
                     </div>
                     <div class="m-0">
@@ -54,7 +54,7 @@
                         v-tooltip="'Fecha vencimiento'"
                       ></i>
                       <span class="text-sm text-surface-500 pl-1">
-                        Expira: {{ item.expires ?? "S/F" }}</span
+                        Expira: {{ formatDate(item.expires) }}</span
                       >
                     </div>
                   </div>
@@ -107,11 +107,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { useConfirm } from "primevue/useconfirm";
 import { changeStatus as changeStatusService } from "@services/taskService";
 import { useToast } from "primevue/usetoast";
 import { useStore } from "vuex";
+import { formatDate } from "@utils/date.util";
 const store = useStore();
 const toast = useToast();
 const drawerEditTask = ref(false);

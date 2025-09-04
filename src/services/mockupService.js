@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function registerMockup() {
   return Promise.resolve({
     data: {
@@ -38,14 +40,13 @@ export function changePassMockup() {
 
 export function changeStatus(data) {
   const dataMockup = window.data || [];
-  console.log(data)
   let newData = dataMockup.map(item => {
     if (item.id === data.id) {
       item.status = item.status == "PENDIENTE" ? "HECHO" : "PENDIENTE";
     }
     return item;
   });
-  console.log(newData)
+
   window.data = newData;
   return Promise.resolve({
     data: {
@@ -57,13 +58,18 @@ export function changeStatus(data) {
 
 export async function updateTaskMockup(data) {
   const dataMockup = window.data || [];
+  data = {...JSON.parse(data)};
+  const expiresDate = moment(data.expires)
+  if(expiresDate.isValid()){
+    data.expires = expiresDate.utcOffset(-4).format('YYYY-MM-DDTHH:mm:ss');
+  }
   let dataMock = dataMockup.map(item => {
     if (item.id === data.id) {
       return {
         ...item,
         ...data,
-        tags: tagsToString(data.tags),
-        expires: dateExpires(data.expires)
+        tags: data.tags,
+        expires: data.expires ?? undefined,
       };
     }
     return item;
@@ -82,10 +88,13 @@ export async function createTaskMockup(data){
     ...JSON.parse(data),
   }
   const dataMock = window.data || [];
+  const expires = data.expires ? moment(data.expires, 'YYYY-MM-DD').utcOffset(-4).format('YYYY-MM-DDTHH:mm:ss') : undefined;
+  const created = moment().utcOffset(-4).format('YYYY-MM-DDTHH:mm:ss');
   dataMock.push({
     ...data,
+    expires: expires,
     id: crypto.randomUUID(),
-    created_at: new Date().toISOString(),
+    created_at: created,
     status: "PENDIENTE",
   })
   return Promise.resolve({
@@ -101,11 +110,6 @@ export async function createTaskMockup(data){
  */
 function tagsToString(tags){
   return tags ? tags.join(',') : '';
-}
-
-function dateExpires(date){
-  const toReturns = !date ? null : date.toISOString().split('T')[0];
-  return toReturns; 
 }
 
 
