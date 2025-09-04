@@ -1,3 +1,4 @@
+import moment from "moment";
 import http from "../config/httpAxios.config";
 export async function getTasks(filter) {
   return http.get("/task", filter);
@@ -31,6 +32,6 @@ function tagsToString(tags){
 }
 
 function dateExpires(date){
-  const toReturns = !date ? null : date.toISOString().split('T')[0];
+  const toReturns = moment(date).isValid() ? moment(date).format('YYYY-MM-DD') : null;
   return toReturns; 
 }

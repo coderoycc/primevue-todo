@@ -21,14 +21,14 @@
         >
         <template #content>
           <label for="tags" class="block text-gray-700 mb-2">Fecha de vencimiento</label>
-          <DatePicker v-model="taskForm.expires" class="w-full" dateFormat="yy-mm-dd" />
+          <DatePicker v-model="dateFormat" class="w-full" dateFormat="dd/MM/yy"  />
         </template>
       </Inplace>
     </div>
     <!-- En caso de editar -->
     <div v-if="task.expires" class="mt-2">
       <label for="tags" class="block text-gray-700 mb-2">Fecha de vencimiento</label>
-      <DatePicker v-model="taskForm.expires" class="w-full" dateFormat="yy-mm-dd" />
+      <DatePicker v-model="dateFormat" class="w-full" dateFormat="dd/MM/yy" />
     </div>
     <div class="mt-3">
       <div class="mb-4">
@@ -60,10 +60,19 @@ import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useToast } from "primevue/usetoast";
 import { create, update } from "../../services/taskService";
+import moment from "moment";
 const toast = useToast();
 const store = useStore();
 const emit = defineEmits(["saved"]);
 const tagsLength = computed(() => (taskForm.value.tags ? taskForm.value.tags.length : 0));
+const dateFormat = computed({
+  get() {
+    return taskForm.value.expires ? moment(taskForm.value.expires).format("DD/MM/YYYY") : "";
+  },
+  set(value) {
+    taskForm.value.expires = moment(value, "DD/MM/YYYY").format('YYYY-MM-DDTHH:mm:ss');
+  }
+});
 const taskDefault = {
   title: "",
   description: "",
@@ -90,7 +99,6 @@ onMounted(() => {
   } else taskForm.value = { ...taskDefault };
 });
 async function sendForm() {
-  console.log(taskForm.value);
   if (validateForm()) {
     try {
       let response = {};
@@ -105,6 +113,7 @@ async function sendForm() {
           life: 2400,
         });
         emit("saved", []);
+        console.log(response.data.data, 'data para resetear datos')
         store.commit("refreshTasks", response.data.data ?? []);
       }
     } catch (error) {
