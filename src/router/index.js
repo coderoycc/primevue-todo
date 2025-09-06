@@ -1,6 +1,7 @@
 import AppLayout from "@views/Layout.vue";
 import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import { guardNavigation } from "../guard/login";
+import { REPO } from "../config/constants";
 const routesApp = [
   {
     path: "/",
@@ -23,7 +24,7 @@ const routesApp = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(`/${REPO}/`),
   routes: [
     ...routesApp,
     {
