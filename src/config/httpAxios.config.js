@@ -18,6 +18,7 @@ const instance = axios.create({
 instance.interceptors.response.use(
   response => response,
   error => {
+    console.log('Error revision mode', MODE)
     if(MODE === "demo") {
       return Promise.resolve(mockupMain(error.config.url, error.config.method, error.config.data))
     } else {
