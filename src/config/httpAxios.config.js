@@ -18,10 +18,10 @@ const instance = axios.create({
 instance.interceptors.response.use(
   response => response,
   error => {
-    if(!error.response) { // No hay conexion al backend
-      if(MODE === "demo") {
-        return Promise.resolve(mockupMain(error.config.url, error.config.method, error.config.data))
-      } else {
+    if(MODE === "demo") {
+      return Promise.resolve(mockupMain(error.config.url, error.config.method, error.config.data))
+    } else {
+      if(!error.response) { // No hay conexion al backend
         return Promise.reject({ response: 
           { data: 
             { 
