@@ -37,7 +37,8 @@ var dataMockup = [
   }
 ]
 export function mockup(){
-  if (MODE === "demo" && !window.data) {
+  const isGHP = window.location.hostname.includes("github.io");
+  if ((MODE === "demo" || isGHP) && !window.data) {
     window.data = dataMockup; 
   }
 }
